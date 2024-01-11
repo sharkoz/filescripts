@@ -77,7 +77,7 @@
                 <td>{{ file.last_modified }}</td>
                 <td>
                     {% for script in scripts %}
-                        <a href="{{ url_for('run', script=script, filename=file.name) }}">{{ script }}</a>
+                        <a href="{{ url_for('run', script=script, path=path ~'/'~file.name) }}">{{ script }}</a>
                     {% endfor %}
                 </td>
             </tr>
