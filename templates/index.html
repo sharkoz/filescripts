@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+        table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td {
+        padding: 8px;
+    }
+    </style>
+    
+</head>
+<body>
+    <h1>Files in the Folder : {{ path }}</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Last Modified</th>
+            <th>Run Script</th>
+        </tr>
+        {% if path != '' %}
+            <tr>
+                <td><a href="{{ url_for('index', path=path ~'/..') }}">> ..</a></td>
+            </tr>
+        {% endif %}
+        {% for folder in folders %}
+            <tr>
+                <td><a href="{{ url_for('index', path=path ~'/'~ folder.name) }}">> {{ folder.name }}</a></td>
+                <td>{{ folder.size }}</td>
+                <td>{{ folder.last_modified }}</td>
+                <td>
+                    {% for script in scripts %}
+                        <a href="{{ url_for('run', script=script, filename=folder.name) }}">{{ script }}</a>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+        {% for file in files %}
+            <tr>
+                <td>{{ file.name }}</td>
+                <td>{{ file.size }}</td>
+                <td>{{ file.last_modified }}</td>
+                <td>
+                    {% for script in scripts %}
+                        <a href="{{ url_for('run', script=script, filename=file.name) }}">{{ script }}</a>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <script>
+        var getCellValue = function(tr, idx){ return tr.children[idx].innerText || tr.children[idx].textContent; }
+
+        var comparer = function(idx, asc) { return function(a, b) { return function(v1, v2) {
+                return v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2);
+            }(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+        }};
+
+        // do the work...
+        Array.prototype.slice.call(document.querySelectorAll('th')).forEach(function(th) { th.addEventListener('click', function() {
+                var table = th.parentNode
+                while(table.tagName.toUpperCase() != 'TABLE') table = table.parentNode;
+                Array.prototype.slice.call(table.querySelectorAll('tr:nth-child(n+2)'))
+                    .sort(comparer(Array.prototype.slice.call(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+                    .forEach(function(tr) { table.appendChild(tr) });
+            })
+        });
+    </script>
+</body>
+</html>

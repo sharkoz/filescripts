@@ -16,4 +16,4 @@ COPY app.py /app
 # configure the container to run in an executed manner
 ENTRYPOINT [ "python" ]
 
-CMD ["app.py" ]
+CMD [ "-m" , "flask", "run", "--host=0.0.0.0" ]

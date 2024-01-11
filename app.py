@@ -5,8 +5,8 @@ import subprocess
 
 app = Flask(__name__)
 
-root = '/temp'  # Replace with the path to your directory
-scripts_directory = './scripts'  # Replace with the path to your scripts directory
+root = '/files'  # Replace with the path to your directory
+scripts_directory = '/scripts'  # Replace with the path to your scripts directory
 
 @app.route('/list_scripts')
 def list_scripts():
