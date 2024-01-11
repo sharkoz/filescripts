@@ -68,8 +68,9 @@ def index():
 
 
 
-@app.route('/run/<script>/<filename>')
-def run(script,filename):
+@app.route('/run/<script>/')
+def run(script):
+    filename=request.args.get('path', '')
     script_path = os.path.join(scripts_directory, script + '.py')  # Remplacez par le nom de votre script
     file_path = os.path.join(root, filename)  # Remplacez par le chemin de votre dossier
     result = subprocess.run(['python', script_path, file_path], capture_output=True, text=True)
